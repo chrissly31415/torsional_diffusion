@@ -182,4 +182,14 @@ for smi_idx, (raw_smi, n_confs, smi) in test_data:
 if args.out:
     with open(f'{args.out}', 'wb') as f:
         pickle.dump(conformer_dict, f)
+    
+    for smi,mols in conformer_dict.items():
+        sdf_writer = Chem.SDWriter(f'{smi}_conformers.sdf')
+
+        # Iterate over the generated mols and write each to the SDF file
+        for mol in mols:
+            sdf_writer.write(mol)
+        sdf_writer.close()
+    
+    
 print('Generated conformers for', len(conformer_dict), 'molecules')
