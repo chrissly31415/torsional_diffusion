@@ -151,6 +151,7 @@ def sample_confs(smi: str, n_confs: int, energy_type: str) -> Optional[List[Mol]
 
     conformers, pdb = embed_seeds(mol, data, n_confs, single_conf=False,
                                   pdb=False, embed_func=embed_func, mmff=False)
+    
     if not conformers:
         print("Failed to embed", smi)
         return None
@@ -162,7 +163,7 @@ def sample_confs(smi: str, n_confs: int, energy_type: str) -> Optional[List[Mol]
         conformers = sample(conformers, model, args.sigma_max, args.sigma_min, n_confs,
                             args.batch_size, False, None, pdb, mol=mol)
 
-    mols = [pyg_to_mol(mol, conf, (energy_type == "mmff"), rmsd=True) for conf in conformers]
+    mols = [pyg_to_mol(mol, conf, (energy_type == "mmff"), rmsd=False) for conf in conformers]
 
     for mol, data in zip(mols, conformers):
         populate_likelihood(mol, data, water=True, xtb=energy_type)
@@ -173,7 +174,7 @@ def sample_confs(smi: str, n_confs: int, energy_type: str) -> Optional[List[Mol]
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8090)
-    #result = generate_conformers(["CCCCO","CCCCNCC"],"/home/loschen/calc/xtb-6.6.1/bin/xtb",10)
+    #uvicorn.run(app, host="0.0.0.0", port=8090)
+    result = generate_conformers(["CCCCO","CCCCNCC"],"/home/loschen/calc/xtb-6.6.1/bin/xtb",10)
     #print(result)
     
